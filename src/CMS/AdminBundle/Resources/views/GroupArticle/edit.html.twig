@@ -38,7 +38,7 @@
 
         //Setup Image for Company logo
         {% if entity.image %}
-        $('#img_upload').attr({'src':"{{ asset('uploads/group/') }}{{ entity.image }}", 'alt':'{{ entity.name }}'});
+        $('#img_upload').attr({'src':"{{ asset('uploads/group/145x145/') }}s_{{ entity.image }}", 'alt':'{{ entity.name }}'});
         {% endif %}
     });
 </script>

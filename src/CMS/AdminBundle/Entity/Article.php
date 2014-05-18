@@ -7,6 +7,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+
+use CMS\AdminBundle\Api\ImageResizeApi;
 
 /**
  * Article
@@ -592,11 +596,28 @@ class Article
         // the entity from being persisted to the database on error
         $this->getFile()->move($this->getUploadRootDir(), $this->image);
 
+        // resize images
+        $imagePath = $this->getUploadRootDir();
+        $thumbPath = $this->getUploadRootDir().'/145x145';
+        $fs = new Filesystem();
+        if(!$fs->exists($thumbPath)){
+            try {
+                $fs->mkdir($thumbPath);
+            } catch (IOExceptionInterface $e) {
+                echo "An error occurred while creating your directory at ".$e->getPath();
+            }
+        }
+        $thumb = new ImageResizeApi($imagePath, $thumbPath, $this->image, 's_'.$this->image, 145, 1, 100);
+        $thumb->resize();
+
         // check if we have an old image
         if (isset($this->temp)) {
             // delete the old image
             if(file_exists($this->getUploadRootDir().'/'.$this->temp))
                 unlink($this->getUploadRootDir().'/'.$this->temp);
+
+            if(file_exists($this->getUploadRootDir().'/145x145/s_'.$this->temp))
+                unlink($this->getUploadRootDir().'/145x145/s_'.$this->temp);
             // clear the temp image path
             $this->temp = null;
         }

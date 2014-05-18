@@ -56,9 +56,9 @@
         	"color": true //Button to change color of font
         });
 
-        //Setup Image for Company logo
+        //Setup Image
         {% if entity.image %}
-            $('#img_upload').attr({'src':"{{ asset('uploads/article/') }}{{ entity.image }}", 'alt':'{{ entity.title }}'});
+            $('#img_upload').attr({'src':"{{ asset('uploads/article/145x145/') }}s_{{ entity.image }}", 'alt':'{{ entity.title }}'});
         {% endif %}
 
         //Setup date time picker
